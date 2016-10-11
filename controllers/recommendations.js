@@ -57,6 +57,11 @@ module.exports.getTweets = function(req, res) {
         });
       }
 
+      console.log("==========================================================");
+      console.log("RECOMMENDATIONS");
+      console.log(recommendationsData);
+      console.log("==========================================================");
+
       var scores = {};
 
       for(var k = 0; k < recommendationsData.length; k++) {
@@ -76,6 +81,7 @@ module.exports.getTweets = function(req, res) {
       }
 
       console.log(scores);
+      console.log("==========================================================");
       if(scores.food) {
         var keyword = Object.keys(scores.food).reduce(function(a, b) {
           return scores.food[a] > scores.food[b] ? a : b
@@ -83,7 +89,12 @@ module.exports.getTweets = function(req, res) {
 
         yelp.search({term: keyword, location: 'Las Vegas'})
         .then(function(data) {
-          res.json(data);
+          var result = {
+            recommendations: recommendationsData,
+            scores: scores,
+            data: data
+          }
+          res.json(result);
         })
         .catch(function(err) {
           res.send(err);
