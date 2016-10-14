@@ -6,30 +6,18 @@
 
 var mongoose = require('mongoose');
 var fs = require('fs');
-var dotenv = require('dotenv');
 
 var Account = require('./models/account');
+
+// Config
+var configDB = require('./config/database.js');
+var iotAppConfig = require('./config/iot.js');
+
 var Client = require('ibmiotf').IotfApplication;
 
-// configuration ===============================================================
-fs.createReadStream('config/.sample-env')
-  .pipe(fs.createWriteStream('config/.env'));
-
-/*
-  IMPORTANT: DotEnv is only for dev environments. Please be sure to set any
-  environment variables traditionally in the production environment.
- */
-dotenv.load();
-
-mongoose.connect(process.env.DATABASE_CREDENTIALS); // connect to our database
-
-var appClient = new Client({
-  "org": "zrbfmw",
-  "id": Date.now().toString(),
-  "auth-method": "apikey",
-  "auth-key": process.env.IOT_AUTH_KEY,
-  "auth-token": process.env.IOT_AUTH_TOKEN
-});
+mongoose.connect(configDB.url); // connect to our database
+console.log(iotAppConfig);
+var appClient = new Client(iotAppConfig);
 
 appClient.connect();
 
@@ -71,18 +59,19 @@ var cfenv = require('cfenv');
 var app = express();
 
 // require files from routes, controllers, etc...
-// require('./routes')(app);
-// var routes = require('./routes');
-// app.use('/', routes);
 
-var api = require('./api');
-app.use('/api', api);
 // serve the files out of ./public as our main files
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+// ROUTER
+var api = require('./api');
+app.use('/api', api);
+
+
 
 app.post('/login', function (req, res) {
 
