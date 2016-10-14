@@ -67,12 +67,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// ROUTER
-var api = require('./api');
-app.use('/api', api);
-
-
-
 app.post('/login', function (req, res) {
 
     var details = req.body;
@@ -133,6 +127,12 @@ app.post('/newaccount', function (req, res) {
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
+
+// ROUTER
+var api = require('./api');
+app.use('/api', api);
+
+module.exports = app;
 
 // start server on the specified port and binding host
 app.listen(appEnv.port, '0.0.0.0', function () {
