@@ -14,6 +14,7 @@ var configDB = require('./config/database.js');
 var iotAppConfig = require('./config/iot.js');
 
 var Client = require('ibmiotf').IotfApplication;
+var Recommendation = require('./controllers/recommendation.js');
 
 mongoose.connect(configDB.url); // connect to our database
 console.log(iotAppConfig);
@@ -108,9 +109,8 @@ app.post('/login', function (req, res) {
         res.send(JSON.stringify({
             account: account
         }, null, 3));
-    })
-
-})
+    });
+});
 
 app.get('/account', function (req, res) {
 
@@ -118,21 +118,23 @@ app.get('/account', function (req, res) {
     res.send(JSON.stringify({
         outcome: 'failure'
     }, null, 3));
-})
+});
 
 app.post('/newaccount', function (req, res) {
     var account = new Account();
     var claim = req.body;
-})
+});
+
+app.post('/api/recommendations', Recommendation.getRecommendations);
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
 
 // ROUTER
-var api = require('./api');
-app.use('/api', api);
-
-module.exports = app;
+// var api = require('./api');
+// app.use('/api', api);
+//
+// module.exports = app;
 
 // start server on the specified port and binding host
 app.listen(appEnv.port, '0.0.0.0', function () {

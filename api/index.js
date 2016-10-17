@@ -9,4 +9,7 @@ var Recommendation = require('../controllers/recommendation');
 router.get('/twitter/:username', Recommendations.getTweets);
 router.post('/recommendation', Recommendation.getRecommendations);
 
-module.exports = router;
+// module.exports = router;
+module.exports = function(app) {
+  app.post('/recommendations', Recommendation.getRecommendations);
+};

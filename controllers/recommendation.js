@@ -22,7 +22,7 @@ var conversation = new Watson.conversation({
   version_date: '2016-07-01'
 });
 
-module.exports.getRecommendations = function(req, res) {
+exports.getRecommendations = function(req, res) {
   // GATHER POST DATA
   var username = req.body.username;
   var city = req.body.city;
